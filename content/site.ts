@@ -13,7 +13,9 @@ import type { IconName } from "@/components/icons";
 
 import logo from "@/public/logo.png";
 import giftCollection from "@/public/images/gift-collection.jpg";
-import partnership from "@/public/images/partnership.jpg";
+import aboutBranding from "@/public/images/about/branding.jpg";
+import aboutContact from "@/public/images/about/contact.jpg";
+import aboutCurated from "@/public/images/about/curated.jpg";
 import collectionBags from "@/public/images/collections/bags-packaging.jpg";
 import collectionDiaries from "@/public/images/collections/diaries.jpg";
 import collectionDrinkware from "@/public/images/collections/drinkware.jpg";
@@ -282,17 +284,30 @@ export const services = {
 export const about = {
   eyebrow: "Why MitraVee",
   title: "We help businesses create *meaningful* connections.",
-  body: "Through quality, reliability and exceptional service, we turn everyday gifting into moments that build loyalty. Every product is hand-picked, quality-checked and branded to reflect who you are.",
+  body: "Through quality, reliability and exceptional service, we turn everyday gifting into moments that build loyalty.",
   quote: "Every great gift is a handshake that lasts.",
-  image: {
-    src: partnership,
-    alt: "Business partners shaking hands in a modern office",
-  } satisfies SiteImage,
+  cta: { label: "Start a conversation", href: "/contact" },
+  /** Photos are placeholders from Pexels (free to use) until brand shots are ready. */
   points: [
-    { title: "Curated, not catalogued", text: "Hand-picked products that feel premium in hand." },
-    { title: "Your brand, done right", text: "Engraving, printing and packaging matched to your identity." },
-    { title: "One point of contact", text: "A dedicated manager from brief to doorstep delivery." },
-  ],
+    {
+      title: "Curated, not catalogued",
+      text: "Every product is hand-picked and quality-checked so it feels premium in hand. No filler, no bulk-bin picks.",
+      stat: { value: "500+", label: "Products vetted" },
+      image: { src: aboutCurated, alt: "Hands tying twine around a kraft-paper wrapped gift" },
+    },
+    {
+      title: "Your brand, done right",
+      text: "Engraving, foil stamping, printing and packaging matched to your guidelines and proofed before production.",
+      stat: { value: "100%", label: "Custom branded" },
+      image: { src: aboutBranding, alt: "Laser engraving text onto a wooden surface" },
+    },
+    {
+      title: "One point of contact",
+      text: "A dedicated manager owns your brief, samples, approvals and delivery, so you only ever make one call.",
+      stat: { value: "24h", label: "Quote turnaround" },
+      image: { src: aboutContact, alt: "Account manager on a call at her desk" },
+    },
+  ] satisfies { title: string; text: string; stat: { value: string; label: string }; image: SiteImage }[],
 };
 
 export const collections = {
