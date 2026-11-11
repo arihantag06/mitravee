@@ -1,26 +1,195 @@
 @import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
+/*
+ * Brand colours are injected from `content/site.ts` (see `app/layout.tsx`).
+ * These are fallbacks only.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f0e8;
+  --foreground: #1c1d3b;
+  --card: #fbf8f3;
+  --card-foreground: var(--foreground);
+  --popover: #fbf8f3;
+  --popover-foreground: var(--foreground);
+  --primary: #3e3f93;
+  --primary-dark: #24255c;
+  --primary-foreground: #fbf8f3;
+  --secondary: #e9e5ee;
+  --secondary-foreground: var(--primary);
+  --muted: color-mix(in oklab, var(--border) 45%, var(--background));
+  --muted-foreground: #6a6878;
+  --accent: var(--secondary);
+  --accent-foreground: var(--foreground);
+  --highlight: #e07b36;
+  --highlight-soft: #f3e2d2;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e2d9cb;
+  --input: var(--border);
+  --ring: var(--primary);
+  --radius: 1rem;
+  /* Header and footer share this height so the page frame is symmetric. */
+  --header-height: 4rem;
+  /* Equal top and bottom padding for every section. */
+  --page-y: clamp(3.5rem, 12vw, 5rem);
+  /* Spacing scale used inside sections: small and large steps. */
+  --space: 1.5rem;
+  --space-lg: 2.5rem;
+  /* Gap between the two halves of every two-column layout. */
+  --gutter: clamp(3rem, 6vw, 6rem);
+}
+
+/* Desktop screens: each page is sized to fit the viewport without scrolling. */
+@custom-variant desk (@media (min-width: 1024px) and (min-height: 600px));
+
+@media (min-width: 1024px) and (min-height: 600px) {
+  :root {
+    --header-height: clamp(3.75rem, 8dvh, 4.75rem);
+    --page-y: clamp(1.25rem, 4dvh, 2.75rem);
+    --space: clamp(0.875rem, 2.6dvh, 1.5rem);
+    --space-lg: clamp(1.5rem, 4.4dvh, 2.75rem);
+  }
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-dark: var(--primary-dark);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-highlight: var(--highlight);
+  --color-highlight-soft: var(--highlight-soft);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+  --radius-4xl: calc(var(--radius) * 3);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+
+  html {
+    -webkit-tap-highlight-color: transparent;
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-background font-sans text-foreground;
+    font-size: 1rem;
+    line-height: 1.6;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@utility container-page {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 84rem;
+  padding-inline: clamp(1.5rem, 5vw, 4rem);
+}
+
+/* Small uppercase label used above headings. */
+@utility label-caps {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+/* Vertical rhythm for every section. */
+@utility section-y {
+  padding-block: var(--page-y);
+}
+
+/* Motion: gentle page enter and staggered reveals only. */
+@media (prefers-reduced-motion: no-preference) {
+  .page-enter {
+    animation: page-in 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .fade-up {
+    animation: reveal 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .stagger > * {
+    animation: reveal 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  }
+
+  .stagger > :nth-child(2) { animation-delay: 80ms; }
+  .stagger > :nth-child(3) { animation-delay: 160ms; }
+  .stagger > :nth-child(4) { animation-delay: 240ms; }
+  .stagger > :nth-child(5) { animation-delay: 320ms; }
+  .stagger > :nth-child(6) { animation-delay: 400ms; }
+  .stagger > :nth-child(n + 7) { animation-delay: 480ms; }
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--muted);
+}
+
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgb(251 248 243 / 0.7), transparent);
+  animation: shimmer 1.4s infinite;
 }
